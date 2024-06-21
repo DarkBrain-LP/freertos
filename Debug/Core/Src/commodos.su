@@ -1,5 +1,0 @@
-../Core/Src/commodos.c:20:6:clignotant_droit	4	static
-../Core/Src/commodos.c:23:6:clignotant_gauche	4	static
-../Core/Src/commodos.c:26:6:clignotant_repos	4	static
-../Core/Src/commodos.c:29:6:clignotant_route_phare	4	static
-../Core/Src/commodos.c:32:6:appel_phare	8	static
