@@ -1,0 +1,16 @@
+../Drivers/CMSIS/Include/core_cm4.h:1672:26:__NVIC_GetPriorityGrouping	4	static
+../Drivers/CMSIS/Include/core_cm4.h:1684:22:__NVIC_EnableIRQ	16	static,ignoring_inline_asm
+../Drivers/CMSIS/Include/core_cm4.h:1814:22:__NVIC_SetPriority	16	static
+../Drivers/CMSIS/Include/core_cm4.h:1861:26:NVIC_EncodePriority	40	static
+../Core/Src/UART_LIN.c:22:6:UART_Init	40	static
+../Core/Src/UART_LIN.c:72:6:SendMessage	32	static
+../Core/Src/UART_LIN.c:94:6:sync_break	4	static
+../Core/Src/UART_LIN.c:109:6:SendHeader	16	static
+../Core/Src/UART_LIN.c:117:6:SendRequest	16	static
+../Core/Src/UART_LIN.c:139:5:slave_response	48	static
+../Core/Src/UART_LIN.c:267:5:slave_response_RTC	8	static
+../Core/Src/UART_LIN.c:281:5:slave_send_RTC	8	static
+../Core/Src/UART_LIN.c:302:6:LIN_SendBreak	4	static
+../Core/Src/UART_LIN.c:311:6:LIN_SendSync	4	static
+../Core/Src/UART_LIN.c:320:6:UART_PutChar	32	static
+../Core/Src/UART_LIN.c:336:9:checksum	24	static

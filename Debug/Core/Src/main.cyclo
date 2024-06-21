@@ -1,0 +1,11 @@
+../Core/Src/main.c:105:5:_write	1
+../Core/Src/main.c:115:5:main	1
+../Core/Src/main.c:214:6:SystemClock_Config	3
+../Core/Src/main.c:260:13:MX_USART2_Init	2
+../Core/Src/main.c:294:13:MX_GPIO_Init	1
+../Core/Src/main.c:329:6:StartLinSenderTask	12
+../Core/Src/main.c:417:6:StartCanReceiverTask	2
+../Core/Src/main.c:468:6:StartTask04	1
+../Core/Src/main.c:492:6:StartCanTrackerTask	3
+../Core/Src/main.c:535:6:HAL_TIM_PeriodElapsedCallback	2
+../Core/Src/main.c:552:6:Error_Handler	1
