@@ -1,0 +1,6 @@
+commodos.c:14:6:clignotant_droit	4	static
+commodos.c:17:6:clignotant_gauche	4	static
+commodos.c:20:6:clignotant_repos	4	static
+commodos.c:23:6:clignotant_route_phare	4	static
+commodos.c:26:6:appel_phare	8	static
+commodos.c:32:6:CAN1_RX0_IRQHandler	8	static

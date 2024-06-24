@@ -1,0 +1,7 @@
+can.c:87:6:CAN_config_filter	24	static
+can.c:157:6:CAN_config	40	static
+can.c:241:6:filtre_config2	16	static
+can.c:291:9:CAN_sendFrame	24	static
+can.c:313:9:CAN_readFrame	8	static
+can.c:351:6:display_frame	40	static
+can.c:382:6:read_buffer	8	static

@@ -1,0 +1,17 @@
+core_cm4.h:1676:26:__NVIC_GetPriorityGrouping	4	static
+core_cm4.h:1688:22:__NVIC_EnableIRQ	16	static
+core_cm4.h:1816:22:__NVIC_SetPriority	16	static
+core_cm4.h:1863:26:NVIC_EncodePriority	40	static
+UART_LIN.c:26:6:UART_Init	40	static
+UART_LIN.c:76:6:SendMessage	32	static
+UART_LIN.c:98:6:sync_break	8	static
+UART_LIN.c:113:6:SendHeader	16	static
+UART_LIN.c:121:6:SendRequest	16	static
+UART_LIN.c:143:5:slave_response	48	static
+UART_LIN.c:272:5:slave_response_RTC	8	static
+UART_LIN.c:286:6:handle_request	8	static
+UART_LIN.c:354:5:slave_send_RTC	8	static
+UART_LIN.c:376:6:LIN_SendBreak	4	static
+UART_LIN.c:385:6:LIN_SendSync	4	static
+UART_LIN.c:394:6:UART_PutChar	32	static
+UART_LIN.c:410:9:checksum	24	static
