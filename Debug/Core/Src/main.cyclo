@@ -8,5 +8,5 @@
 ../Core/Src/main.c:464:6:StartTask04	1
 ../Core/Src/main.c:488:6:StartCanTrackerTask	3
 ../Core/Src/main.c:530:6:StartAcceleroTask	5
-../Core/Src/main.c:611:6:HAL_TIM_PeriodElapsedCallback	2
-../Core/Src/main.c:628:6:Error_Handler	1
+../Core/Src/main.c:596:6:HAL_TIM_PeriodElapsedCallback	2
+../Core/Src/main.c:613:6:Error_Handler	1

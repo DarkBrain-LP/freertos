@@ -534,7 +534,6 @@ void StartAcceleroTask(void const * argument)
 	double y = 0;
 	double z = 0;
 	uint8_t state_updated = 0;
-	char converted[2];
   /* Infinite loop */
   for(;;)
   {
@@ -543,21 +542,7 @@ void StartAcceleroTask(void const * argument)
 	  x = get_ACC_X();
 	  y = get_ACC_Y();
 	  z = get_ACC_Z();
-
-	  serial_puts("(");
-	  float2string(x, converted);
-	  serial_puts(converted);
-	  serial_puts(", ");
-
-	  float2string(y, converted);
-	  serial_puts(converted);
-	  serial_puts(", ");
-
-	  float2string(z, converted);
-	  serial_puts(converted);
-	  serial_puts(")");
-	  newLine();
-
+	  Tx_Msg.ID = LIN_SLAVE_WRITE_RTC_PID;
 	  Tx_Msg.length = 0;
 
 	  if(x < SEUIL_ARRIERE){
