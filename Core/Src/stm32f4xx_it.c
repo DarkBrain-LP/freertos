@@ -25,6 +25,8 @@
 #include "cmsis_os.h"
 #include "can.h"
 #include "usart2.h"
+#include "spi.h"
+#include "lis3dsh.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,6 +50,7 @@ extern osThreadId myTask04Handle;
 extern osMessageQId linCanQueueHandle;
 extern osThreadId canTrackerTaskHandle;
 extern osThreadId linSenderTaskHandle;
+extern osThreadId acceleroTaskHandle;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -207,5 +210,18 @@ void CAN1_RX0_IRQHandler( void )
 
 //	osSignalSet(canReceiverTaskHandle, 1); // phare_state
 //	printf("Released CanReceiver \n\r\r");
+}
+
+// Accéléromètre
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+    if(GPIO_Pin == GPIO_PIN_0){
+		//exit
+    	osSignalSet(acceleroTaskHandle, 1);
+		SPIread(CTRL_REG5 | SPI_READ);
+		SPIread(CTRL_REG5 | SPI_READ);
+
+		SPIread(OUTS1 | SPI_READ);
+		SPIread(OUTS2 | SPI_READ);
+    }
 }
 /* USER CODE END 1 */

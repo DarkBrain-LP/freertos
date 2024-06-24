@@ -28,6 +28,8 @@
 #include "commodos.h"
 #include "UART_LIN.h"
 #include "usart2.h"
+#include "spi.h"
+#include "lis3dsh.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,6 +54,7 @@ osThreadId linSenderTaskHandle;
 osThreadId canReceiverTaskHandle;
 osThreadId myTask04Handle;
 osThreadId canTrackerTaskHandle;
+osThreadId acceleroTaskHandle;
 osMessageQId linCanQueueHandle;
 osMutexId myMutex01Handle;
 /* USER CODE BEGIN PV */
@@ -95,6 +98,7 @@ void StartLinSenderTask(void const * argument);
 void StartCanReceiverTask(void const * argument);
 void StartTask04(void const * argument);
 void StartCanTrackerTask(void const * argument);
+void StartAcceleroTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -142,6 +146,8 @@ int main(void)
   UART_Init();
   CAN_config();
   CAN_config_filter(0, 0, 0x0, 0x10520312, 0x10035110);
+  init_SPI();
+  init_ACC();
   /* USER CODE END 2 */
 
   /* Create the mutex(es) */
@@ -172,11 +178,11 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of linSenderTask */
-  osThreadDef(linSenderTask, StartLinSenderTask, osPriorityHigh, 0, 128);
+  osThreadDef(linSenderTask, StartLinSenderTask, osPriorityNormal, 0, 128);
   linSenderTaskHandle = osThreadCreate(osThread(linSenderTask), NULL);
 
   /* definition and creation of canReceiverTask */
-  osThreadDef(canReceiverTask, StartCanReceiverTask, osPriorityNormal, 0, 128);
+  osThreadDef(canReceiverTask, StartCanReceiverTask, osPriorityIdle, 0, 128);
   canReceiverTaskHandle = osThreadCreate(osThread(canReceiverTask), NULL);
 
   /* definition and creation of myTask04 */
@@ -186,6 +192,10 @@ int main(void)
   /* definition and creation of canTrackerTask */
   osThreadDef(canTrackerTask, StartCanTrackerTask, osPriorityIdle, 0, 128);
   canTrackerTaskHandle = osThreadCreate(osThread(canTrackerTask), NULL);
+
+  /* definition and creation of acceleroTask */
+  osThreadDef(acceleroTask, StartAcceleroTask, osPriorityIdle, 0, 128);
+  acceleroTaskHandle = osThreadCreate(osThread(acceleroTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -300,12 +310,13 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOE_CLK_ENABLE();
 
-  /*Configure GPIO pin : PA0 */
+  /*Configure GPIO pin : PE0 */
   GPIO_InitStruct.Pin = GPIO_PIN_0;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI0_IRQn, 5, 0);
@@ -398,9 +409,9 @@ void StartLinSenderTask(void const * argument)
 
 		  SendRequest(&Tx_Msg);
 		  HAL_Delay(500);
+		  printf("\n\r=================================\n\r");
 	  }
 
-	  printf("\n\r=================================\n\r");
 
 	  osDelay(1000);
   }
@@ -429,27 +440,12 @@ void StartCanReceiverTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-//	  if (!executed_once){
-//		  executed_once = 1;
-//	  }else{
-//
-//	  }
-//	  printf("Blablalba\n\r");
-//	  auto_frame.data[0] = 1;
-//	  	  CAN_sendFrame(auto_frame);
-//
-//	  	  HAL_Delay(2000);
-//
-//	  	  auto_frame.data[0] = (8 & ~(1));
-//	  	  CAN_sendFrame(auto_frame);
-//	  	  HAL_Delay(2000);
+
 
 	  	  // REAL CODE
 	  canReadedTracker = osMessageGet(linCanQueueHandle, 1000);
 	  if(canReadedTracker.value.v == 0x1){
-//		  printf("Can Readed - Let's send LIN request \n \r");
 		can_received_cnt++;
-//		printf("CAN Received n°%d :: (ID = %d, Value= %d) \n\r", can_received_cnt, CAN_RxMessage.STDID, CAN_RxMessage.data[0]);
 		osSignalSet(linSenderTaskHandle, 1);
 		osDelay(1000);
 	  }
@@ -474,8 +470,8 @@ void StartTask04(void const * argument)
   {
     osSignalWait(1, osWaitForever);
     cnt++;
-    printf("Donnée Can recue %d \n \r", cnt);
-    HAL_Delay(500);
+//    printf("Donnée Can recue %d \n \r", cnt);
+//    HAL_Delay(500);
 
 	osDelay(1000);
   }
@@ -522,6 +518,86 @@ void StartCanTrackerTask(void const * argument)
 
   }
   /* USER CODE END StartCanTrackerTask */
+}
+
+/* USER CODE BEGIN Header_StartAcceleroTask */
+/**
+* @brief Function implementing the acceleroTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartAcceleroTask */
+void StartAcceleroTask(void const * argument)
+{
+  /* USER CODE BEGIN StartAcceleroTask */
+	double x = 0;
+	double y = 0;
+	double z = 0;
+	uint8_t state_updated = 0;
+	char converted[2];
+  /* Infinite loop */
+  for(;;)
+  {
+	  osSignalWait(1, osWaitForever);
+
+	  x = get_ACC_X();
+	  y = get_ACC_Y();
+	  z = get_ACC_Z();
+
+	  serial_puts("(");
+	  float2string(x, converted);
+	  serial_puts(converted);
+	  serial_puts(", ");
+
+	  float2string(y, converted);
+	  serial_puts(converted);
+	  serial_puts(", ");
+
+	  float2string(z, converted);
+	  serial_puts(converted);
+	  serial_puts(")");
+	  newLine();
+
+	  Tx_Msg.length = 0;
+
+	  if(x < SEUIL_ARRIERE){
+		  serial_puts("ARRIERE");
+		  newLine();
+		  Tx_Msg.ID = LIN_PHARE_ARRIERE;
+		  state_updated = 1;
+	  }
+	  else if(x > SEUIL_AVANT){
+		  serial_puts("AVANT");
+		  newLine();
+		  Tx_Msg.ID = LIN_PHARE_AVANT;
+		  state_updated = 1;
+	  }
+	  else if(y < SEUIL_DROIT){
+		  serial_puts("DROIT");
+		  newLine();
+		  Tx_Msg.ID = LIN_CLIGNO_DROIT;
+		  state_updated = 1;
+	  }
+	  else if(y > SEUIL_GAUCHE){
+		  serial_puts("GAUCHE");
+		  newLine();
+		  Tx_Msg.ID = LIN_CLIGNO_GAUCHE;
+		  state_updated = 1;
+	  }
+
+
+//	  if(!state_updated){
+	  else{
+		  Tx_Msg.ID = LIN_RESET;
+		  state_updated = 0;
+		  serial_puts("RESET");
+		  newLine();
+	  }
+
+	  SendRequest(&Tx_Msg);
+	  HAL_Delay(100);
+  }
+  /* USER CODE END StartAcceleroTask */
 }
 
 /**

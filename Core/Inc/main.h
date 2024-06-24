@@ -53,7 +53,7 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -65,6 +65,13 @@ void Error_Handler(void);
 #define LIN_PHARE_AVANT 4 // Veilleuse
 #define LIN_PHARE_ARRIERE 5
 #define LIN_PHARE_STOP 6
+#define LIN_RESET 7
+
+// accéléro
+#define SEUIL_AVANT 300 // x
+#define SEUIL_ARRIERE -300 // x
+#define SEUIL_GAUCHE 200 // y
+#define SEUIL_DROIT -200 // y
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
