@@ -214,7 +214,8 @@ void CAN1_RX0_IRQHandler( void )
 
 // Accéléromètre
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
-    if(GPIO_Pin == GPIO_PIN_0){
+
+	if(GPIO_Pin == GPIO_PIN_0){
 		//exit
     	osSignalSet(acceleroTaskHandle, 1);
 		SPIread(CTRL_REG5 | SPI_READ);

@@ -4478,7 +4478,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
  800220c:	af00      	add	r7, sp, #0
  800220e:	4603      	mov	r3, r0
  8002210:	80fb      	strh	r3, [r7, #6]
-    if(GPIO_Pin == GPIO_PIN_0){
+
+	if(GPIO_Pin == GPIO_PIN_0){
  8002212:	88fb      	ldrh	r3, [r7, #6]
  8002214:	2b01      	cmp	r3, #1
  8002216:	d111      	bne.n	800223c <HAL_GPIO_EXTI_Callback+0x34>
